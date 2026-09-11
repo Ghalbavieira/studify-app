@@ -1,0 +1,230 @@
+[
+  {
+    "id": "10000000-0000-4000-8000-000000000001",
+    "subjectLabel": "Redes",
+    "topicLabel": "Endereçamento IPv4",
+    "statement": "Uma rede IPv4 /24 reserva um endereço para a rede e outro para broadcast. Quantos endereços restam para hosts?",
+    "explanation": "Um /24 deixa 8 bits para hosts: 2⁸ = 256 endereços. Retirando rede e broadcast, restam 254.",
+    "difficulty": "easy",
+    "board": "Studify — material autoral",
+    "year": 2026,
+    "sourceType": "own",
+    "sourceReference": "Demonstração própria do Studify; não corresponde a uma prova oficial.",
+    "options": [
+      {
+        "id": "20000000-0000-4000-8000-000000000010",
+        "label": "A",
+        "text": "128",
+        "isCorrect": false
+      },
+      {
+        "id": "20000000-0000-4000-8000-000000000011",
+        "label": "B",
+        "text": "254",
+        "isCorrect": true
+      },
+      {
+        "id": "20000000-0000-4000-8000-000000000012",
+        "label": "C",
+        "text": "256",
+        "isCorrect": false
+      },
+      {
+        "id": "20000000-0000-4000-8000-000000000013",
+        "label": "D",
+        "text": "512",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000002",
+    "subjectLabel": "RLM",
+    "topicLabel": "Porcentagem",
+    "statement": "Uma estudante resolveu 80 questões e errou 20% delas. Quantas questões ela errou?",
+    "explanation": "20% de 80 é 0,20 × 80 = 16.",
+    "difficulty": "easy",
+    "board": "Studify — material autoral",
+    "year": 2026,
+    "sourceType": "own",
+    "sourceReference": "Demonstração própria do Studify; não corresponde a uma prova oficial.",
+    "options": [
+      {
+        "id": "20000000-0000-4000-8000-000000000020",
+        "label": "A",
+        "text": "8",
+        "isCorrect": false
+      },
+      {
+        "id": "20000000-0000-4000-8000-000000000021",
+        "label": "B",
+        "text": "12",
+        "isCorrect": false
+      },
+      {
+        "id": "20000000-0000-4000-8000-000000000022",
+        "label": "C",
+        "text": "16",
+        "isCorrect": true
+      },
+      {
+        "id": "20000000-0000-4000-8000-000000000023",
+        "label": "D",
+        "text": "20",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000003",
+    "subjectLabel": "Português",
+    "topicLabel": "Concordância verbal",
+    "statement": "Complete a frase com a concordância adequada: “As estudantes ___ os tópicos antes da prova.”",
+    "explanation": "O sujeito “As estudantes” está no plural. A forma verbal que concorda com ele é “revisam”.",
+    "difficulty": "easy",
+    "board": "Studify — material autoral",
+    "year": 2026,
+    "sourceType": "own",
+    "sourceReference": "Demonstração própria do Studify; não corresponde a uma prova oficial.",
+    "options": [
+      {
+        "id": "20000000-0000-4000-8000-000000000030",
+        "label": "A",
+        "text": "revisa",
+        "isCorrect": false
+      },
+      {
+        "id": "20000000-0000-4000-8000-000000000031",
+        "label": "B",
+        "text": "revisam",
+        "isCorrect": true
+      },
+      {
+        "id": "20000000-0000-4000-8000-000000000032",
+        "label": "C",
+        "text": "revisou",
+        "isCorrect": false
+      },
+      {
+        "id": "20000000-0000-4000-8000-000000000033",
+        "label": "D",
+        "text": "revisando",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000004",
+    "subjectLabel": "Segurança",
+    "topicLabel": "Autenticação",
+    "statement": "Qual alternativa combina dois fatores distintos de autenticação?",
+    "explanation": "Senha é um fator de conhecimento; chave física é um fator de posse. Duas senhas continuam sendo o mesmo tipo de fator.",
+    "difficulty": "easy",
+    "board": "Studify — material autoral",
+    "year": 2026,
+    "sourceType": "own",
+    "sourceReference": "Demonstração própria do Studify; não corresponde a uma prova oficial.",
+    "options": [
+      {
+        "id": "20000000-0000-4000-8000-000000000040",
+        "label": "A",
+        "text": "Duas senhas diferentes",
+        "isCorrect": false
+      },
+      {
+        "id": "20000000-0000-4000-8000-000000000041",
+        "label": "B",
+        "text": "Senha e pergunta sobre o nome da mãe",
+        "isCorrect": false
+      },
+      {
+        "id": "20000000-0000-4000-8000-000000000042",
+        "label": "C",
+        "text": "Senha e chave física de segurança",
+        "isCorrect": true
+      },
+      {
+        "id": "20000000-0000-4000-8000-000000000043",
+        "label": "D",
+        "text": "PIN e outra senha",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000005",
+    "subjectLabel": "Cloud",
+    "topicLabel": "Conceitos básicos",
+    "statement": "Um serviço aumenta e reduz os recursos conforme a demanda. Qual conceito essa descrição exemplifica?",
+    "explanation": "Elasticidade é a capacidade de ajustar os recursos à demanda, aumentando ou reduzindo a capacidade.",
+    "difficulty": "easy",
+    "board": "Studify — material autoral",
+    "year": 2026,
+    "sourceType": "own",
+    "sourceReference": "Demonstração própria do Studify; não corresponde a uma prova oficial.",
+    "options": [
+      {
+        "id": "20000000-0000-4000-8000-000000000050",
+        "label": "A",
+        "text": "Elasticidade",
+        "isCorrect": true
+      },
+      {
+        "id": "20000000-0000-4000-8000-000000000051",
+        "label": "B",
+        "text": "Criptografia",
+        "isCorrect": false
+      },
+      {
+        "id": "20000000-0000-4000-8000-000000000052",
+        "label": "C",
+        "text": "Normalização",
+        "isCorrect": false
+      },
+      {
+        "id": "20000000-0000-4000-8000-000000000053",
+        "label": "D",
+        "text": "Compilação",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "10000000-0000-4000-8000-000000000006",
+    "subjectLabel": "Inglês",
+    "topicLabel": "Passado simples",
+    "statement": "Em “She studied yesterday”, a palavra “studied” indica uma ação em qual tempo?",
+    "explanation": "“Studied” é a forma do passado simples de “study”. “Yesterday” também situa a ação no passado.",
+    "difficulty": "easy",
+    "board": "Studify — material autoral",
+    "year": 2026,
+    "sourceType": "own",
+    "sourceReference": "Demonstração própria do Studify; não corresponde a uma prova oficial.",
+    "options": [
+      {
+        "id": "20000000-0000-4000-8000-000000000060",
+        "label": "A",
+        "text": "Presente contínuo",
+        "isCorrect": false
+      },
+      {
+        "id": "20000000-0000-4000-8000-000000000061",
+        "label": "B",
+        "text": "Passado simples",
+        "isCorrect": true
+      },
+      {
+        "id": "20000000-0000-4000-8000-000000000062",
+        "label": "C",
+        "text": "Futuro simples",
+        "isCorrect": false
+      },
+      {
+        "id": "20000000-0000-4000-8000-000000000063",
+        "label": "D",
+        "text": "Presente perfeito",
+        "isCorrect": false
+      }
+    ]
+  }
+]

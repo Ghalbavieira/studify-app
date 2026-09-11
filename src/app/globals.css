@@ -1,26 +1,101 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
+  --background: #0b1220;
+  --background-secondary: #101827;
+  --foreground: #f8fafc;
+  --surface: #162033;
+  --raised: #1b2940;
+  --line: #27364d;
+  --secondary: #b8c2d1;
+  --muted: #8f9db1;
+  --blue: #3b82f6;
+  --cyan: #4cc2ff;
+  --violet: #7c5cff;
+  --green: #22c55e;
+  --yellow: #fbbf24;
+  --pink: #ec4899;
+  --orange: #f97316;
+  --red: #ef4444;
+  --primary: var(--blue);
+  --primary-hover: #5593f7;
+  --on-primary: #0b1220;
+  --accent: var(--cyan);
+  --accent-subtle: #152d4b;
+  --highlight: #a28bff;
+  --highlight-subtle: #272044;
+  --success: var(--green);
+  --attention: var(--yellow);
+  --error: #ff8585;
+  --subject-pink: #f477b5;
+  --subject-orange: #ff9347;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-background-secondary: var(--background-secondary);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-line: var(--line);
+  --color-secondary: var(--secondary);
+  --color-muted: var(--muted);
+  --color-blue: var(--blue);
+  --color-cyan: var(--cyan);
+  --color-violet: var(--violet);
+  --color-green: var(--green);
+  --color-yellow: var(--yellow);
+  --color-pink: var(--pink);
+  --color-orange: var(--orange);
+  --color-red: var(--red);
+  --color-subject-pink: var(--subject-pink);
+  --color-subject-orange: var(--subject-orange);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-accent: var(--accent);
+  --color-accent-subtle: var(--accent-subtle);
+  --color-highlight: var(--highlight);
+  --color-highlight-subtle: var(--highlight-subtle);
+  --color-success: var(--success);
+  --color-attention: var(--attention);
+  --color-error: var(--error);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * { box-sizing: border-box; }
+  html { background: var(--background); }
+  body {
+    margin: 0;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+    line-height: 1.6;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  h1, h2, h3 { text-wrap: balance; }
+  button, input, select, textarea { font: inherit; }
+  button, a { -webkit-tap-highlight-color: transparent; }
+  button { cursor: pointer; }
+  button, a, input { transition: background-color 150ms, border-color 150ms, color 150ms; }
+  button:hover { background-color: var(--raised); }
+  a:hover { color: var(--foreground); }
+  :is(button, a).bg-primary { color: var(--on-primary); }
+  :is(button, a).bg-primary:hover { background-color: var(--primary-hover); }
+  :is(button, a, input, select, textarea):focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+  }
+  input { min-width: 0; }
+  input::placeholder { color: var(--muted); opacity: 1; }
+  div:has(> input):focus-within { border-color: var(--accent); }
+  ::selection { background: var(--primary); color: var(--on-primary); }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; }
+  }
 }

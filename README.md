@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Studify
 
-## Getting Started
+Ferramenta de estudo centrada em Hoje: objetivo, sequência diária, sessões, questões, revisões e prioridades baseadas em evidências.
 
-First, run the development server:
+## Executar
 
-```bash
+```sh
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra `http://localhost:3000`. Sem configuração Supabase, o aplicativo identifica explicitamente o modo local e salva neste navegador. Sem dados, as telas começam vazias e orientam a criação do objetivo; não há métricas fictícias.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Para login e sincronização, siga [Configurar Supabase](docs/supabase-setup.md). Use apenas `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` no frontend. Crie o banco executando as migrations, não pelo Table Editor.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Fluxo de uso
 
-## Learn More
+1. Criar objetivo/prova, data e meta semanal.
+2. Adicionar matérias com pesos e seus tópicos.
+3. Montar a semana inteira no Plano, com duração, tipo de sessão e questões previstas.
+4. Em Hoje, começar pela próxima ação ou escolher um bloco.
+5. Finalizar o cronômetro e registrar tempo efetivo, questões externas e notas.
+6. Resolver questões do banco: cada tentativa vira evidência de aprendizagem.
+7. Retomar revisões e recalls quando estiverem pendentes; consultar a execução e as prioridades calculadas.
 
-To learn more about Next.js, take a look at the following resources:
+## Verificar
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```sh
+npm run lint
+npm run typecheck
+npm run test
+npm run build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Em ambientes que bloqueiam a porta interna de compilação do Turbopack, a alternativa é `npm run build -- --webpack`, sem alterar o bundler do projeto.
 
-## Deploy on Vercel
+[Configuração e testes de banco](docs/supabase-setup.md) · [Plano de implementação](docs/implementation-plan.md)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Limites desta versão
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- As seis questões iniciais são autorais de demonstração; não são uma base de provas comerciais/oficiais.
+- O banco remoto só passa a operar após preencher o ambiente e aplicar as migrations no Supabase.
+- A explicação por LLM é opcional e exige configuração de servidor. O motor determinístico é sempre a fonte dos cálculos.
+- O cronômetro em andamento é preservado no navegador/dispositivo; sessões finalizadas são sincronizadas quando conectado.
+- O catálogo carrega até 200 questões nesta primeira versão. Paginação e ferramentas de autoria/importação são próximas evoluções.
+
+## Comunidade
+
+A primeira camada social inclui grupos, publicações cronológicas, notas/resumos, compartilhamento de progresso e perfil. É uma demonstração local, isolada por conta, com seis grupos fictícios. Não envia conteúdo a outros usuários. Veja [estrutura e limites](docs/community.md).
