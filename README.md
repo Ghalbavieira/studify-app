@@ -46,4 +46,9 @@ Em ambientes que bloqueiam a porta interna de compilação do Turbopack, a alter
 
 ## Comunidade
 
-A primeira camada social inclui grupos, publicações cronológicas, notas/resumos, compartilhamento de progresso e perfil. É uma demonstração local, isolada por conta, com seis grupos fictícios. Não envia conteúdo a outros usuários. Veja [estrutura e limites](docs/community.md).
+A camada social inclui grupos, publicações, comentários, curtidas, reposts, favoritos, seguidores e perfil. Com Supabase configurado e as migrations `006_social_mvp.sql` e `007_beta_readiness.sql` aplicadas, os dados sociais são compartilhados entre contas reais com RLS e imagens da comunidade usam Supabase Storage. Sem Supabase, o app mantém o modo local de demonstração. Veja [estrutura e limites](docs/community.md).
+
+
+## Beta público
+
+Antes de convidar testadores, siga [o checklist de liberação](docs/beta-release.md). O beta inclui recuperação de senha, feedback in-app e importação de edital tolerante a falha parcial. Cobrança real permanece desativada.

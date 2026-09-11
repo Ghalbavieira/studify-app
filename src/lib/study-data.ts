@@ -7,8 +7,18 @@ const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine((value) => {
 }, "Data inválida");
 const timestamp = z.iso.datetime();
 export const subjectColors = ["blue", "violet", "orange", "green", "amber", "pink"] as const;
-export const goalSchema = z.object({ id, title: z.string().trim().min(1).max(160), examDate: date.nullable(), weeklyMinutes: z.number().int().min(10).max(10080) });
-export const subjectSchema = z.object({ id, name: z.string().trim().min(1).max(100), weight: z.number().min(0.1).max(100), color: z.enum(subjectColors) });
+export const goalSchema = z.object({
+  id,
+  title: z.string().trim().min(1).max(160),
+  examDate: date.nullable(),
+  weeklyMinutes: z.number().int().min(10).max(10080),
+  board: z.string().trim().max(160).optional(),
+  organization: z.string().trim().max(200).optional(),
+  role: z.string().trim().max(200).optional(),
+  questionsTotal: z.number().int().min(0).max(10000).nullable().optional(),
+  cutoffScore: z.number().min(0).max(100000).nullable().optional(),
+});
+export const subjectSchema = z.object({ id, name: z.string().trim().min(1).max(100), weight: z.number().min(0.1).max(100), color: z.enum(subjectColors), questionCount: z.number().int().min(0).max(10000).nullable().optional() });
 export const topicSchema = z.object({ id, subjectId: id, title: z.string().trim().min(1).max(200), completed: z.boolean() });
 export const blockSchema = z.object({ id, date, subjectId: id, topicId: id.nullable(), minutes: z.number().int().min(1).max(1440), description: z.string().max(2000), done: z.boolean(), plannedQuestions: z.number().int().min(0).max(100000).default(0), sessionType: z.enum(["study", "questions", "review", "recall"]).default("study") });
 export const sessionSchema = z.object({

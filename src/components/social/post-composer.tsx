@@ -8,7 +8,7 @@ import { buttonClass, inputClass } from "../study-ui";
 import { UserAvatar } from "./user-avatar";
 import { MediaUpload } from "./media-upload";
 
-export function PostComposer({ onPublish, reply = false }: { onPublish: (draft: PostDraft) => void; reply?: boolean }) {
+export function PostComposer({ onPublish, reply = false, groupId = null }: { onPublish: (draft: PostDraft) => void; reply?: boolean; groupId?: string | null }) {
   const { me } = useSocial();
   const { data } = useStudyData();
   const [text, setText] = useState("");
@@ -22,7 +22,7 @@ export function PostComposer({ onPublish, reply = false }: { onPublish: (draft: 
     event.preventDefault();
     if (busy || (!text.trim() && !media)) return;
     try {
-      onPublish({ text: text.trim(), media, subject: data.subjects.find((subject) => subject.id === subjectId)?.name ?? null, topic: data.topics.find((topic) => topic.id === topicId)?.title ?? null, objective: objective ? data.goal?.title ?? null : null, metrics: null });
+      onPublish({ text: text.trim(), media, subject: data.subjects.find((subject) => subject.id === subjectId)?.name ?? null, topic: data.topics.find((topic) => topic.id === topicId)?.title ?? null, objective: objective ? data.goal?.title ?? null : null, metrics: null, groupId });
       setText(""); setMedia(null); setSubjectId(""); setTopicId(""); setObjective(false); setError("");
     } catch { setError("Não foi possível salvar. O armazenamento local pode estar cheio ou indisponível."); }
   }}>

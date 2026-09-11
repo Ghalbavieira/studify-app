@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { initializeCloudData, initializeLocalData, setStudyError } from "@/lib/study-store";
+import { StudyNavigationGuard } from "./study-navigation-guard";
 
 export function StudyProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -28,5 +29,8 @@ export function StudyProvider({ children }: { children: React.ReactNode }) {
       setStudyError(error instanceof Error ? error.message : "Confira a configuração do Supabase.");
     }
   }, []);
-  return children;
+  return <>
+    <StudyNavigationGuard />
+    {children}
+  </>;
 }

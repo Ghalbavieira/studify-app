@@ -99,3 +99,12 @@
     *, *::before, *::after { transition: none !important; }
   }
 }
+
+@media print {
+  body { background: #fff !important; color: #000 !important; }
+  aside, header.sticky { display: none !important; }
+  main { width: 100% !important; }
+  main > div { padding: 0 !important; }
+  * { box-shadow: none !important; }
+  @page { size: A4; margin: 14mm; }
+}
