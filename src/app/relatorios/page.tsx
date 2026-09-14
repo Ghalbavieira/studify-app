@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
+import { usePlan } from "@/lib/use-plan";
 import { Printer } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { buttonClass, inputClass, timeLabel } from "@/components/study-ui";
@@ -15,6 +17,8 @@ const daysAgo = (days: number) => {
 
 export default function RelatoriosPage() {
   const { data } = useStudyData();
+  const plan = usePlan();
+  const fullHistory = plan.can("canUseFullHistory");
   const [range, setRange] = useState<"7" | "30" | "all" | "custom">("30");
   const [from, setFrom] = useState(daysAgo(29));
   const [to, setTo] = useState(localDate(new Date()));
@@ -22,9 +26,10 @@ export default function RelatoriosPage() {
   const period = useMemo(() => {
     if (range === "7") return { from: daysAgo(6), to: localDate(new Date()) };
     if (range === "30") return { from: daysAgo(29), to: localDate(new Date()) };
-    if (range === "custom") return { from, to };
+    if (range === "custom") return { from: fullHistory ? from : from < daysAgo(29) ? daysAgo(29) : from, to };
+    if (!fullHistory) return { from: daysAgo(29), to: localDate(new Date()) };
     return { from: "0000-01-01", to: "9999-12-31" };
-  }, [from, range, to]);
+  }, [from, range, to, fullHistory]);
 
   const report = useMemo(() => {
     const sessions = data.sessions.filter((session) => {
@@ -57,11 +62,12 @@ export default function RelatoriosPage() {
   return <AppShell><div className="mx-auto max-w-6xl print:max-w-none">
     <header className="flex flex-wrap items-end justify-between gap-4 border-b border-line pb-6 print:border-black">
       <div><p className="text-sm text-accent print:text-black">Relatório de preparação</p><h1 className="mt-1 text-3xl font-semibold">{data.goal?.title || "Seus estudos"}</h1><p className="mt-2 text-sm text-muted print:text-black">{range === "all" ? "Todo o histórico" : `${period.from} a ${period.to}`}</p></div>
-      <div className="flex gap-2 print:hidden"><button className={`${buttonClass} inline-flex items-center gap-2`} onClick={() => window.print()}><Printer size={17}/>Exportar PDF</button></div>
+      <div className="flex gap-2 print:hidden"><button className={`${buttonClass} inline-flex items-center gap-2`} disabled={!plan.can("canUseFullReports")} onClick={() => window.print()}><Printer size={17}/>Exportar PDF</button></div>
     </header>
 
+    {!plan.can("canUseFullReports") && <Link href="/planos" className="mt-4 inline-block text-sm text-accent">Relatórios exportáveis e histórico completo no Pro →</Link>}
     <section className="grid gap-4 border-b border-line py-5 md:grid-cols-4 print:hidden">
-      <label className="text-sm text-secondary">Período<select className={inputClass} value={range} onChange={(event) => setRange(event.target.value as typeof range)}><option value="7">Últimos 7 dias</option><option value="30">Últimos 30 dias</option><option value="all">Desde o início</option><option value="custom">Personalizado</option></select></label>
+      <label className="text-sm text-secondary">Período<select className={inputClass} value={range} onChange={(event) => setRange(event.target.value as typeof range)}><option value="7">Últimos 7 dias</option><option value="30">Últimos 30 dias</option>{fullHistory && <option value="all">Desde o início</option>}<option value="custom">Personalizado</option></select></label>
       {range === "custom" && <><label className="text-sm text-secondary">De<input type="date" className={inputClass} value={from} onChange={(e) => setFrom(e.target.value)} /></label><label className="text-sm text-secondary">Até<input type="date" className={inputClass} value={to} onChange={(e) => setTo(e.target.value)} /></label></>}
     </section>
 

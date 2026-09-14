@@ -1,3 +1,4 @@
+import { SafetyActions } from "./community-safety";
 import Image from "next/image";
 import Link from "next/link";
 import type { Post, SocialProfile } from "@/lib/social";
@@ -14,7 +15,7 @@ export function PostCard({ post, author, repostedBy }: { post: Post; author: Soc
       {post.media && <Link href={`/comunidade/publicacao/${post.id}`} className="mt-3 block"><Image unoptimized src={post.media.url} alt={post.media.alt} width={720} height={480} className="max-h-[480px] w-full rounded-lg object-contain bg-background-secondary" /></Link>}
       {(post.subject || post.topic || post.objective) && <p className="mt-3 text-xs text-highlight">{[post.subject, post.topic, post.objective].filter(Boolean).join(" · ")}</p>}
       {post.metrics && <p className="mt-3 text-xs text-accent">{timeLabel(post.metrics.seconds)} estudados · {post.metrics.questions} questões{post.metrics.accuracy !== null && ` · ${Math.round(post.metrics.accuracy * 100)}% de acerto`}</p>}
-      <PostActions postId={post.id} />
+      <PostActions postId={post.id} /><SafetyActions kind="post" id={post.id} authorId={post.authorId} />
     </div></div>
   </article>;
 }

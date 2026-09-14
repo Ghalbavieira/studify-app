@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { initializeCloudData, initializeLocalData, setStudyError } from "@/lib/study-store";
+import { clearSocialCache } from "@/lib/social-store";
+import { saveActiveStudy } from "@/lib/active-study";
 import { StudyNavigationGuard } from "./study-navigation-guard";
 
 export function StudyProvider({ children }: { children: React.ReactNode }) {
@@ -21,7 +23,10 @@ export function StudyProvider({ children }: { children: React.ReactNode }) {
       const { data: { subscription } } = client.auth.onAuthStateChange((_event, session) => {
         const userId = session?.user.id ?? null;
         if (userId === lastUser) return;
+        if (lastUser) saveActiveStudy(lastUser, null);
+        clearSocialCache();
         lastUser = userId;
+        void initializeCloudData(null);
         setTimeout(() => { if (active) void initializeCloudData(userId); }, 0);
       });
       return () => { active = false; subscription.unsubscribe(); };

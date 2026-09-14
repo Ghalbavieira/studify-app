@@ -21,6 +21,9 @@ export async function POST(request: Request) {
     const context = buildPriorityContext(studyDataSchema.parse(stored.data));
     const priority = context.recommendation;
     if (!priority) return Response.json({ explanation: "Adicione matérias e registre seus primeiros estudos para receber uma prioridade.", source: "deterministic" });
+    const usage = await supabase.rpc("consume_studify_usage", { p_feature: "ai" });
+    if (usage.error) return Response.json({ error: "Não foi possível consultar o limite de IA. Tente novamente." }, { status: 503 });
+    if (!usage.data?.allowed) return Response.json({ error: "Você atingiu seu limite diário de IA. As recomendações calculadas continuam disponíveis." }, { status: 429 });
     let explanation = priority.reasons.slice(0, 4).join(" ");
     let source = "deterministic";
     if (process.env.GROQ_API_KEY) {

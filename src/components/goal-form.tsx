@@ -14,7 +14,7 @@ export function GoalForm({ onSaved }: { onSaved?: () => void }) {
   const [message, setMessage] = useState("");
   return <form className="max-w-xl space-y-4" onSubmit={async (event) => {
     event.preventDefault();
-    const result = goalSchema.safeParse({ id: data.goal?.id ?? crypto.randomUUID(), title, examDate: examDate || null, weeklyMinutes: Number(weeklyMinutes) });
+    const result = goalSchema.safeParse({ ...data.goal, id: data.goal?.id ?? crypto.randomUUID(), title, examDate: examDate || null, weeklyMinutes: Number(weeklyMinutes) });
     if (!result.success) { setMessage("Confira o objetivo, a data e a meta semanal (10 a 10080 minutos)."); return; }
     const saved = await updateStudyData((current) => ({ ...current, profileName: name.trim(), goal: result.data }));
     if (saved) { setMessage("Objetivo salvo."); onSaved?.(); }

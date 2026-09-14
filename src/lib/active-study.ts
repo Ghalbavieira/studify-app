@@ -30,8 +30,9 @@ export function saveActiveStudy(userId: string | null, active: ActiveStudy | nul
 }
 
 export function useActiveStudy() {
-  const { userId } = useStudyData();
+  const { userId, ready } = useStudyData();
   const raw = useSyncExternalStore(subscribe, () => {
+    if (!ready) return null;
     const storageKey = key(userId);
     try { return localStorage.getItem(storageKey) ?? memory[storageKey] ?? null; } catch { return memory[storageKey] ?? null; }
   }, () => null);

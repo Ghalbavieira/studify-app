@@ -91,7 +91,8 @@
     outline: 2px solid var(--accent);
     outline-offset: 4px;
   }
-  input { min-width: 0; }
+  input, select, textarea { min-width: 0; max-width: 100%; }
+  @media (pointer: coarse) { button, input, select { min-height: 44px; } }
   input::placeholder { color: var(--muted); opacity: 1; }
   div:has(> input):focus-within { border-color: var(--accent); }
   ::selection { background: var(--primary); color: var(--on-primary); }

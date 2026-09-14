@@ -304,6 +304,9 @@ export async function POST(request: Request) {
     const chunks = makeChunks(relevantPages);
     if (!chunks.length) return Response.json({ error: "Não encontrei trechos suficientes para analisar neste edital." }, { status: 422 });
 
+    const usage = await supabase.rpc("consume_studify_usage", { p_feature: "exam_import" });
+    if (usage.error) return Response.json({ error: "Não foi possível consultar seu limite de importação. Tente novamente." }, { status: 503 });
+    if (!usage.data?.allowed) return Response.json({ error: "Você atingiu seu limite mensal de importações. O cadastro manual continua disponível." }, { status: 429 });
     const model = process.env.GROQ_MODEL || "openai/gpt-oss-20b";
     const parts: Extraction[] = [];
     let failedChunks = 0;

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const mediaSchema = z.object({ url: z.string().max(1500000).refine((url) => /^data:image\/(png|jpeg|webp);base64,/.test(url) || url.startsWith("/social/")), alt: z.string().max(200) });
+const mediaSchema = z.object({ url: z.string().max(1500000).refine((url) => /^data:image\/(png|jpeg|webp);base64,/.test(url) || url.startsWith("/social/") || /^https:\/\//.test(url)), alt: z.string().max(200) });
 const profileSchema = z.object({ id: z.string(), username: z.string(), name: z.string(), bio: z.string(), avatar: mediaSchema.nullable(), objective: z.string(), subjects: z.array(z.string()), studiedSeconds: z.number().nonnegative().nullable() });
 const metricsSchema = z.object({ seconds: z.number().nonnegative(), questions: z.number().nonnegative(), accuracy: z.number().min(0).max(1).nullable() });
 const postSchema = z.object({ id: z.string(), authorId: z.string(), text: z.string().max(1000), media: mediaSchema.nullable(), createdAt: z.string(), subject: z.string().nullable(), topic: z.string().nullable(), objective: z.string().nullable(), metrics: metricsSchema.nullable(), groupId: z.string().nullable().default(null) }).refine((post) => post.text.trim() || post.media);

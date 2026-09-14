@@ -1,5 +1,6 @@
 "use client";
 
+import { usePlan } from "@/lib/use-plan";
 import Link from "next/link";
 import { useState } from "react";
 import { AppShell } from "@/components/app-shell";
@@ -10,6 +11,7 @@ import { useStudyData, updateStudyData } from "@/lib/study-store";
 import { getSupabaseClient } from "@/lib/supabase/client";
 
 export default function IaPage() {
+  const plan = usePlan();
   const { data, mode, saving } = useStudyData();
   const context = buildPriorityContext(data);
   const best = context.recommendation;
@@ -22,7 +24,7 @@ export default function IaPage() {
   const pending = data.blocks.filter((block) => block.date === today && !block.done);
   const score = (subjectId: string) => context.priorities.find((priority) => priority.subjectId === subjectId)?.score ?? 0;
   const ordered = [...pending].sort((a, b) => score(b.subjectId) - score(a.subjectId));
-  const canAdjust = ordered.some((block, index) => block.id !== pending[index].id);
+  const canAdjust = plan.can("canUseAdvancedPlanning") && ordered.some((block, index) => block.id !== pending[index].id);
   return <AppShell><div className="mx-auto max-w-4xl"><header className="border-b border-line pb-5"><p className="text-sm text-highlight">Studify IA</p><h1 className="mt-1 text-3xl font-semibold">Qual é o próximo passo?</h1><p className="mt-3 text-sm text-muted">Prioridades calculadas a partir do seu objetivo, execução e evidências de aprendizagem.</p></header>{!best ? <div className="py-8"><EmptyState title="Precisamos de contexto para recomendar" description="Defina seu objetivo e adicione matérias. Os registros reais vão tornar as prioridades mais específicas." href={!data.goal ? "/cadastro" : "/materias"} action={!data.goal ? "Criar objetivo" : "Adicionar matérias"} /></div> : <>
     <section className="border-b border-line py-7"><p className="text-xs uppercase tracking-[.16em] text-accent">Próxima ação</p><h2 className="mt-3 text-3xl font-semibold">{best.subject}</h2><p className="mt-2 text-lg text-secondary">{best.nextBlock.topic ?? best.nextBlock.description}</p><p className="mt-3 text-sm text-muted">{best.nextBlock.minutes} minutos sugeridos</p><Link href={`${best.nextBlock.kind === "questions" ? "/questoes" : "/estudos"}?subject=${best.subjectId}${best.nextBlock.topicId ? `&topic=${best.nextBlock.topicId}` : ""}${best.nextBlock.blockId ? `&block=${best.nextBlock.blockId}` : ""}${best.nextBlock.taskId ? `&task=${best.nextBlock.taskId}` : ""}`} className={`${buttonClass} mt-5 inline-block`}>Começar este estudo</Link><ul className="mt-6 space-y-2 text-sm leading-6 text-secondary">{best.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul>{mode === "cloud" && <button disabled={busy} className={`${secondaryButtonClass} mt-5`} onClick={async () => {
       setBusy(true); setMessage("");

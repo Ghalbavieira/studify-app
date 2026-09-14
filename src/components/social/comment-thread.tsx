@@ -1,4 +1,5 @@
 "use client";
+import { SafetyActions } from "./community-safety";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -10,7 +11,7 @@ import { PostCard } from "./post-card";
 import { PostComposer } from "./post-composer";
 
 export function CommentCard({ comment, author }: { comment: Comment; author: SocialProfile }) {
-  return <article className="flex gap-3 border-b border-line py-5"><Link href={`/comunidade/${author.username}`}><UserAvatar profile={author} /></Link><div className="min-w-0 flex-1"><Link href={`/comunidade/${author.username}`} className="text-sm font-semibold">{author.name}</Link><span className="ml-2 text-xs text-muted">@{author.username}</span><p className="mt-2 whitespace-pre-wrap break-words text-sm leading-7 text-secondary">{comment.text}</p>{comment.media && <Image unoptimized src={comment.media.url} alt={comment.media.alt} width={600} height={400} className="mt-3 max-h-80 w-full rounded-lg object-contain" />}<time dateTime={comment.createdAt} className="mt-3 block text-xs text-muted">{new Date(comment.createdAt).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}</time></div></article>;
+  return <article className="flex gap-3 border-b border-line py-5"><Link href={`/comunidade/${author.username}`}><UserAvatar profile={author} /></Link><div className="min-w-0 flex-1"><Link href={`/comunidade/${author.username}`} className="text-sm font-semibold">{author.name}</Link><span className="ml-2 text-xs text-muted">@{author.username}</span><p className="mt-2 whitespace-pre-wrap break-words text-sm leading-7 text-secondary">{comment.text}</p>{comment.media && <Image unoptimized src={comment.media.url} alt={comment.media.alt} width={600} height={400} className="mt-3 max-h-80 w-full rounded-lg object-contain" />}<time dateTime={comment.createdAt} className="mt-3 block text-xs text-muted">{new Date(comment.createdAt).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}</time><SafetyActions kind="comment" id={comment.id} authorId={comment.authorId} /></div></article>;
 }
 
 export function CommentThread({ postId }: { postId: string }) {

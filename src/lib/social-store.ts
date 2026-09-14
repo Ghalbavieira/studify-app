@@ -2,15 +2,17 @@
 
 import { useCallback, useEffect, useMemo, useSyncExternalStore } from "react";
 import { useStudyData } from "./study-store";
-import { emptySocial, initialSocial, normalizeSearch, socialSchema, type SocialData, type SocialProfile } from "./social";
+import { emptySocial, normalizeSearch, socialSchema, type SocialData, type SocialProfile } from "./social";
 import { getSupabaseClient } from "./supabase/client";
 
-const localFallback = initialSocial();
+const localFallback = emptySocial();
 const cloudFallback = emptySocial();
 const listeners = new Set<() => void>();
 const localCache = new Map<string, { raw: string | null; data: SocialData }>();
 const cloudCache = new Map<string, SocialData>();
 const cloudLoading = new Map<string, Promise<void>>();
+let cacheGeneration = 0;
+export function clearSocialCache() { cacheGeneration++; cloudCache.clear(); cloudLoading.clear(); profileSignatures.clear(); localCache.clear(); emit(); }
 const profileSignatures = new Map<string, string>();
 
 const subscribe = (listener: () => void) => {
@@ -44,6 +46,7 @@ async function loadCloudData(userId: string, force = false) {
   const running = cloudLoading.get(userId);
   if (running) return running;
 
+  const generation = cacheGeneration;
   const request = (async () => {
     const supabase = getSupabaseClient();
     const [profiles, posts, comments, follows, likes, reposts, bookmarks, groups, members] = await Promise.all([
@@ -113,6 +116,7 @@ async function loadCloudData(userId: string, force = false) {
       groupMembers: (members.data ?? []).map((row) => ({ groupId: row.group_id, userId: row.user_id, role: row.role, joinedAt: row.joined_at })),
     });
 
+    if (generation !== cacheGeneration) return;
     cloudCache.set(userId, data);
     emit();
   })().finally(() => cloudLoading.delete(userId));
@@ -272,7 +276,7 @@ export function useSocial() {
     emit();
     void persistDiff(userId, before, next)
       .then(() => loadCloudData(userId, true))
-      .catch(() => loadCloudData(userId, true));
+      .catch(async () => { window.dispatchEvent(new CustomEvent("studify-social-error", { detail: "Não foi possível salvar sua alteração. Confira as regras e tente novamente." })); await loadCloudData(userId, true); });
   }
 
   function toggle(kind: "likes" | "reposts" | "bookmarks", postId: string) {

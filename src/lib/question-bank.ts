@@ -6,17 +6,26 @@ import { attemptSchema } from "./study-data";
 
 export type Question = {
   id: string; subjectId: string | null; topicId: string | null; subjectLabel: string; topicLabel: string;
-  statement: string; difficulty: string | null; board: string; year: number | null; sourceType: string; sourceReference: string | null;
+  organization?: string; role?: string; questionType?: string; statement: string; difficulty: string | null; board: string; year: number | null; sourceType: string; sourceReference: string | null;
   options: { id: string; label: string; text: string }[];
 };
 
-type CatalogRow = { id: string; subject_id: string | null; topic_id: string | null; subject_label: string; topic_label: string; statement: string; difficulty: string | null; source_type: string; source_reference: string | null; exam: { year: number; exam_board: { name: string } } | null; options: Question["options"] };
+type CatalogRow = { id: string; subject_id: string | null; topic_id: string | null; subject_label: string; topic_label: string; statement: string; difficulty: string | null; source_type: string; source_reference: string | null; question_type: string; exam: { organization: string; role: string; year: number; exam_board: { name: string } } | null; options: Question["options"] };
 
-export async function loadQuestions(mode: "local" | "cloud"): Promise<Question[]> {
+export async function loadQuestions(mode: "local" | "cloud", ids?: string[]): Promise<Question[]> {
   if (mode === "local") return demo.map((question) => ({ ...question, subjectId: null, topicId: null, options: question.options.map(({ id, label, text }) => ({ id, label, text })) }));
-  const { data, error } = await getSupabaseClient().from("questions").select("id,subject_id,topic_id,subject_label,topic_label,statement,difficulty,source_type,source_reference,exam:exams(year,exam_board:exam_boards(name)),options:question_options(id,label,text)").order("created_at").limit(200).returns<CatalogRow[]>();
+  const rows: CatalogRow[] = [];
+  for (let offset = 0; ; offset += 500) {
+    let query = getSupabaseClient().from("questions").select("id,subject_id,topic_id,subject_label,topic_label,statement,difficulty,source_type,source_reference,exam:exams(organization,role,year,exam_board:exam_boards(name)),options:question_options(id,label,text)").order("created_at").order("id");
+    if (ids) query = query.in("id", ids);
+    const { data, error } = await query.range(offset, offset + 499).returns<CatalogRow[]>();
+    if (error) throw error;
+    rows.push(...data ?? []);
+    if ((data?.length ?? 0) < 500) break;
+  }
+  const data = rows; const error = null;
   if (error) throw error;
-  return (data ?? []).map((question) => ({ id: question.id, subjectId: question.subject_id, topicId: question.topic_id, subjectLabel: question.subject_label, topicLabel: question.topic_label, statement: question.statement, difficulty: question.difficulty, board: question.exam?.exam_board?.name ?? "Sem banca", year: question.exam?.year ?? null, sourceType: question.source_type, sourceReference: question.source_reference, options: [...question.options].sort((a, b) => a.label.localeCompare(b.label)) }));
+  return (data ?? []).map((question) => ({ id: question.id, subjectId: question.subject_id, topicId: question.topic_id, subjectLabel: question.subject_label, topicLabel: question.topic_label, organization: question.exam?.organization ?? "", role: question.exam?.role ?? "", questionType: question.options.length === 2 ? "true_false" : "multiple_choice", statement: question.statement, difficulty: question.difficulty, board: question.exam?.exam_board?.name ?? "Sem banca", year: question.exam?.year ?? null, sourceType: question.source_type, sourceReference: question.source_reference, options: [...question.options].sort((a, b) => a.label.localeCompare(b.label)) }));
 }
 
 export async function answerQuestion(input: { mode: "local" | "cloud"; questionId: string; optionId: string; requestId: string; subjectId: string; topicId: string | null; studySessionId: string; seconds: number }) {

@@ -1,42 +1,29 @@
 "use client";
-
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getSupabaseClient } from "@/lib/supabase/client";
-import type { StudifyPlan } from "@/lib/plans";
-
-export type PlanState = {
-  plan: StudifyPlan;
-  status: "active" | "trialing" | "past_due" | "canceled";
-  loading: boolean;
-};
-
-export function usePlan(): PlanState {
-  const [state, setState] = useState<PlanState>({ plan: "free", status: "active", loading: true });
-
-  useEffect(() => {
-    let alive = true;
-    async function load() {
-      try {
-        const supabase = getSupabaseClient();
-        const { data: auth } = await supabase.auth.getUser();
-        if (!auth.user) {
-          if (alive) setState({ plan: "free", status: "active", loading: false });
-          return;
-        }
-        const { data } = await supabase.from("profiles").select("plan, plan_status").eq("id", auth.user.id).maybeSingle();
-        if (!alive) return;
-        const plan = data?.plan === "pro" ? "pro" : "free";
-        const status = ["active", "trialing", "past_due", "canceled"].includes(data?.plan_status ?? "")
-          ? data!.plan_status as PlanState["status"]
-          : "active";
-        setState({ plan, status, loading: false });
-      } catch {
-        if (alive) setState({ plan: "free", status: "active", loading: false });
-      }
-    }
-    void load();
-    return () => { alive = false; };
-  }, []);
-
-  return state;
+import { useStudyData } from "@/lib/study-store";
+export type Capability = "canCreateMultipleGoals" | "canUseFullHistory" | "canUseAdvancedAnalytics" | "canUseAdvancedAI" | "canUseAdvancedExamImport" | "canUseAdvancedPlanning" | "canUseFullReports" | "canUseTimer" | "canUseCommunity";
+export type PlanState = { plan: "free" | "pro"; status: "free" | "active" | "trialing"; loading: boolean; error?: string; trialDaysRemaining: number; billingStatus?: string; expiresAt?: string | null; capabilities: Partial<Record<Capability, boolean>> };
+const initial: PlanState = { plan: "free", status: "free", loading: true, trialDaysRemaining: 0, capabilities: {} };
+export function usePlan() {
+  const { mode, userId } = useStudyData();
+  const [state, setState] = useState<PlanState>(initial);
+  const generation = useRef(0);
+  const refresh = useCallback(async () => {
+    const version = ++generation.current;
+    if (mode !== "cloud" || !userId) { setState({ ...initial, loading: false }); return; }
+    try {
+      const { data, error } = await getSupabaseClient().rpc("get_entitlement");
+      if (error || data?.version !== 1 || !data.capabilities || !["free", "pro"].includes(data.plan)) throw error ?? new Error("Plano indisponível");
+      if (version === generation.current) setState({ ...data, loading: false });
+    } catch { if (version === generation.current) setState({ ...initial, loading: false, error: "Não foi possível consultar seu plano. Tente atualizar." }); }
+  }, [mode, userId]);
+  useEffect(() => { const ref = generation;
+    const timer = setTimeout(() => void refresh(), 0);
+    const focus = () => { if (document.visibilityState === "visible") void refresh(); };
+    document.addEventListener("visibilitychange", focus);
+    const interval = setInterval(focus, 60_000);
+    return () => { ref.current++; clearTimeout(timer); clearInterval(interval); document.removeEventListener("visibilitychange", focus); };
+  }, [refresh]);
+  return { ...state, refresh, can: (capability: Capability) => mode === "cloud" && !state.loading && !state.error && state.capabilities[capability] === true };
 }
